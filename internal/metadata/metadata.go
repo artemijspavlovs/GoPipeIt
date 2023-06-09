@@ -62,6 +62,7 @@ func (cfg *Metadata) SetGitBranch(n string) {
 	if n == "" {
 		pterm.Println(pterm.White("Git branch was not set, defaulting to ") + pterm.Yellow("main"))
 		cfg.SetGitBranch("main")
+		return
 	}
 	cfg.GitBranch = n
 }
