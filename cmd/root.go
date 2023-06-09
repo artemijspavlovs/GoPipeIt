@@ -106,7 +106,6 @@ func GenerateConfigFromTemplates(t string, s []state.SourceToDest, m *metadata.M
 				return err
 			}
 		}
-
 	}
 	return nil
 }
