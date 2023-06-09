@@ -1,0 +1,14 @@
+---
+# https://github.com/wagoid/commitlint-github-action
+# https://commitlint.js.org/#/
+name: commitlint conventional commit check for cicd-go-test
+on: [pull_request]
+
+jobs:
+  commitlint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - uses: wagoid/commitlint-github-action@v5
