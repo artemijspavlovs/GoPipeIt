@@ -2,6 +2,7 @@ package wizard
 
 import (
 	"errors"
+	"fmt"
 
 	"atomicgo.dev/keyboard/keys"
 	"github.com/pterm/pterm"
@@ -26,7 +27,8 @@ func New(m *metadata.Metadata, fs *afero.Fs) error {
 	pterm.Info.Printfln("language detected: '%s'", m.ProgrammingLanguage)
 
 	pni.WithMultiLine()
-	pn, _ := pni.WithDefaultText("Input a custom project name ( defaults to the project name defined in your go.mod file )").Show()
+	pn, _ := pni.WithDefaultText(
+		fmt.Sprintf("Input a custom project name ( defaults to the project name defined in your '%s' file )", m.ProgrammingLanguageConfigFile)).Show()
 
 	err := m.SetProjectName(pn, fs)
 	if err != nil {
