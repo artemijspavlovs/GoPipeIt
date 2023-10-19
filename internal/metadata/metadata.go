@@ -27,21 +27,29 @@ func (cfg *Metadata) SetProgrammingLanguage(n string) {
 }
 
 func (cfg *Metadata) SetProjectName(n string, fs *afero.Fs) error {
-	switch cfg.ProgrammingLanguage {
-	case "go":
-		// TODO: extract into a separate function
-		err := cfg.SetProjectNameForGoProject(n, fs)
-		if err != nil {
-			pterm.Error.PrintOnError(err)
-			return err
+	if n == "" {
+		switch cfg.ProgrammingLanguage {
+		case "go":
+			fmt.Println("Project name was not set, extracting from go.mod file")
+			gopn, err := cfg.ExtractProjectNameFromGoModFile(fs)
+			if err != nil {
+				return fmt.Errorf("failed to extract project name from go.mod file: %v", err)
+			}
+			pterm.Println("Project name extracted from go.mod:", pterm.Yellow(*gopn))
+			cfg.ProjectName = *gopn
+			return nil
+		case "rust":
+			fmt.Println("Project name was not set, extracting from Cargo.toml file")
+			rpn, err := cfg.ExtractProjectNameFromCargoFile(fs)
+			if err != nil {
+				return fmt.Errorf("failed to extract project name from Cargo.toml file: %v", err)
+			}
+			pterm.Println("Project name extracted from go.mod:", pterm.Yellow(*rpn))
+			cfg.ProjectName = *rpn
+			return nil
 		}
-
-		cfg.ProjectName = n
-		return nil
-	case "rust":
-		fmt.Println("tbd")
 	}
-	// TODO: improve error message
+	cfg.ProjectName = n
 	return errors.New("something went wrong")
 }
 
