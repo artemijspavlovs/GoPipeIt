@@ -1,6 +1,8 @@
 package wizard
 
 import (
+	"errors"
+
 	"atomicgo.dev/keyboard/keys"
 	"github.com/pterm/pterm"
 	"github.com/spf13/afero"
@@ -11,6 +13,23 @@ import (
 // New function bootstraps together the interactive configurator that the end user sees in their terminals
 func New(m *metadata.Metadata, fs afero.Fs) error {
 	pni := pterm.DefaultInteractiveTextInput
+
+	// detect the programming language of the project by the corresponding configuration files
+	var lang string
+	if ok, _ := afero.Exists(fs, "go.mod"); ok {
+		lang = "go"
+	} else if ok, _ := afero.Exists(fs, "Cargo.toml"); ok {
+		lang = "rust"
+	} else {
+		// TODO: remove this duplicate message
+		pterm.Error.Println(`The tool currently supports only Go(go.mod) and Rust(cargo.toml) programming languages.
+Neither of the respectful language specific configuration files were found.
+Exiting`)
+
+		return errors.New(`the tool currently supports only Go(go.mod) and Rust(cargo.toml).
+		Neither of the respectful language specific configuration files were find, exiting`)
+	}
+	pterm.Info.Printfln("%s language detected", lang)
 
 	pni.WithMultiLine()
 	pn, _ := pni.WithDefaultText("Input a custom project name ( defaults to the project name defined in your go.mod file )").
