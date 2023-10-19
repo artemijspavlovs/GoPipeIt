@@ -4,6 +4,7 @@ go 1.19
 
 require (
 	atomicgo.dev/keyboard v0.2.9
+	github.com/BurntSushi/toml v1.3.2
 	github.com/pterm/pterm v0.12.56
 	github.com/spf13/afero v1.10.0
 	github.com/spf13/cobra v1.6.1
