@@ -14,8 +14,10 @@ import (
 	"github.com/artemijspavlovs/gopipeit/internal/wizard"
 )
 
-var ApplicationFileSystem = afero.NewOsFs()
-var RegenerateAll bool
+var (
+	ApplicationFileSystem = afero.NewOsFs()
+	RegenerateAll         bool
+)
 
 //go:embed templates/*
 var embeddedTemplates embed.FS
@@ -77,7 +79,6 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 				}
 			}
 		}
-
 	},
 }
 
