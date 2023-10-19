@@ -8,11 +8,10 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/artemijspavlovs/gopipeit/internal/metadata"
-	"github.com/artemijspavlovs/gopipeit/internal/state"
 )
 
 type Templates struct {
-	Pairs []state.SourceToDest
+	Pairs []metadata.SourceToDest
 }
 
 func New() *Templates {
@@ -27,7 +26,7 @@ func WriteToFile(t *template.Template, f afero.File, cfg *metadata.Metadata) err
 	return nil
 }
 
-func (t *Templates) AddPairs(pairs []state.SourceToDest) {
+func (t *Templates) AddPairs(pairs []metadata.SourceToDest) {
 	t.Pairs = append(t.Pairs, pairs...)
 }
 

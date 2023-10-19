@@ -10,7 +10,6 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/artemijspavlovs/gopipeit/internal/metadata"
-	"github.com/artemijspavlovs/gopipeit/internal/state"
 	"github.com/artemijspavlovs/gopipeit/internal/templates"
 	"github.com/artemijspavlovs/gopipeit/internal/wizard"
 )
@@ -28,32 +27,36 @@ var rootCmd = &cobra.Command{
 	Long: `Binary created to provide CI and local development configuration files for Go projects.
 Use it to generate optimal configuration files for GitHub Actions, goreleaser, pre-commit and golangi-lint`,
 	Run: func(cmd *cobra.Command, args []string) {
-		metadata := metadata.New()
+		m := metadata.New()
 
-		wizard.New(metadata, ApplicationFileSystem)
+		err := wizard.New(m, ApplicationFileSystem)
+		if err != nil {
+			return
+		}
+
 		r, _ := pterm.DefaultInteractiveConfirm.WithDefaultText("overwrite existing configs? (defaults to No)").Show()
 		RegenerateAll = r
 
 		pterm.Info.Println("generating configuration files...")
 		tmpl := templates.New()
 
-		pterm.Info.Println("selected CI/CD platform:", pterm.Yellow(metadata.CICDPlatform))
-		switch metadata.CICDPlatform {
+		pterm.Info.Println("selected CI/CD platform:", pterm.Yellow(m.CICDPlatform))
+		switch m.CICDPlatform {
 		case "github":
 			// move directory creation to CreateDirectoryStructure function?
-			err := tmpl.CreateDirectoryStructure(state.Platforms["github"].DirectoryStructure, ApplicationFileSystem)
+			err := tmpl.CreateDirectoryStructure(metadata.Platforms["github"].DirectoryStructure, ApplicationFileSystem)
 			if err != nil {
 				pterm.Fatal.Println("failed to create directory structure for GitHub CI", err)
 				return
 			}
 		}
 
-		if len(metadata.PipelineTasks) == 0 {
+		if len(m.PipelineTasks) == 0 {
 			pterm.Warning.Println("no pipeline tasks were selected, skipping configuration file generation")
 		} else {
-			pterm.Info.Printfln("generating configuration files related to %s tasks", pterm.Yellow(metadata.CICDPlatform))
-			for t := range metadata.PipelineTasks {
-				err := GenerateConfigFromTemplates(t, state.Tasks[t].Configs, metadata)
+			pterm.Info.Printfln("generating configuration files related to %s tasks", pterm.Yellow(m.CICDPlatform))
+			for t := range m.PipelineTasks {
+				err := GenerateConfigFromTemplates(t, metadata.Tasks[t].Configs, m)
 				if err != nil {
 					pterm.Fatal.Printfln("failed to generate config for %s: %v", t, err)
 					return
@@ -61,12 +64,12 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 			}
 		}
 
-		if len(metadata.LocalTasks) == 0 {
+		if len(m.LocalTasks) == 0 {
 			pterm.Warning.Println("no additional tools were selected, skipping configuration file generation")
 		} else {
 			pterm.Info.Println("setting up additional tools")
-			for t := range metadata.LocalTasks {
-				err := GenerateConfigFromTemplates(t, state.LocalTasks[t].Configs, metadata)
+			for t := range m.LocalTasks {
+				err := GenerateConfigFromTemplates(t, metadata.LocalTasks[t].Configs, m)
 				if err != nil {
 					pterm.Fatal.Printfln("failed to generate config for %s: %v", t, err)
 					return
@@ -77,7 +80,7 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 	},
 }
 
-func GenerateConfigFromTemplates(t string, s []state.SourceToDest, m *metadata.Metadata) error {
+func GenerateConfigFromTemplates(t string, s []metadata.SourceToDest, m *metadata.Metadata) error {
 	fs := afero.NewOsFs()
 	for _, pair := range s {
 		exists, _ := afero.Exists(fs, pair.ConfigDestination)

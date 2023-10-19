@@ -6,47 +6,51 @@ import (
 	"github.com/spf13/afero"
 
 	"github.com/artemijspavlovs/gopipeit/internal/metadata"
-	"github.com/artemijspavlovs/gopipeit/internal/state"
 )
 
-func New(metadata *metadata.Metadata, fs afero.Fs) {
+// New function bootstraps together the interactive configurator that the end user sees in their terminals
+func New(m *metadata.Metadata, fs afero.Fs) error {
 	pni := pterm.DefaultInteractiveTextInput
-	pni.WithMultiLine(false)
-	pn, _ := pni.WithDefaultText("Input a custom project name ( default to the project name defined in your go.mod file )").Show()
 
-	err := metadata.SetProjectName(pn, fs)
+	pni.WithMultiLine()
+	pn, _ := pni.WithDefaultText("Input a custom project name ( defaults to the project name defined in your go.mod file )").
+		Show()
+
+	err := m.SetProjectName(pn, fs)
 	if err != nil {
 		pterm.Error.Println("failed to set project name: " + err.Error())
-		return
+		return err
 	}
 
 	gbi := pterm.DefaultInteractiveTextInput
 	gbi.WithMultiLine(false)
 	gb, _ := gbi.WithDefaultText("Input default git branch ( defaults to main )").Show()
 
-	metadata.SetGitBranch(gb)
+	m.SetGitBranch(gb)
 
 	gvi := pterm.DefaultInteractiveTextInput
 	gvi.WithMultiLine(false)
-	gv, _ := gvi.WithDefaultText("Input the Go version to use ( defaults to the Go version defined in your go.mod file )").Show()
+	gv, _ := gvi.WithDefaultText("Input the Go version to use ( defaults to the Go version defined in your go.mod file )").
+		Show()
 
-	err = metadata.SetGoVersion(gv, fs)
+	err = m.SetGoVersion(gv, fs)
 	if err != nil {
 		pterm.Error.Println("failed to extract metadata values: ", err.Error())
-		return
+		return err
 	}
 
-	cicd := newSelectWizard("Select a CI/CD platform", state.Platforms)
-	metadata.SetCICDPlatform(cicd)
+	cicd := newSelectWizard("Select a CI/CD platform", metadata.Platforms)
+	m.SetCICDPlatform(cicd)
 
-	t := newMultiselectWizard("Select tasks to include in the CI/CD pipeline", state.Tasks)
-	metadata.SetPipelineTasks(t)
+	t := newMultiselectWizard("Select tasks to include in the CI/CD pipeline", metadata.Tasks)
+	m.SetPipelineTasks(t)
 
-	lt := newMultiselectWizard("Select additional tools that you want to generate the config file for", state.LocalTasks)
-	metadata.SetLocalTasks(lt)
+	lt := newMultiselectWizard("Select additional tools that you want to generate the config file for", metadata.LocalTasks)
+	m.SetLocalTasks(lt)
+	return nil
 }
 
-func newMultiselectWizard(h string, o map[string]state.ConfigurableTool) []string {
+func newMultiselectWizard(h string, o map[string]metadata.ConfigurableTool) []string {
 	opts := make([]string, 0, len(o))
 
 	for k := range o {
@@ -63,7 +67,7 @@ func newMultiselectWizard(h string, o map[string]state.ConfigurableTool) []strin
 	return selectedOptions
 }
 
-func newSelectWizard(h string, o map[string]state.ConfigurableTool) string {
+func newSelectWizard(h string, o map[string]metadata.ConfigurableTool) string {
 	opts := make([]string, 0, len(o))
 
 	for k := range o {

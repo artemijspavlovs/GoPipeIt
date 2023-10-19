@@ -1,4 +1,4 @@
-package state
+package metadata
 
 type SourceToDest struct {
 	//! config destination will depend on the cicd platform
