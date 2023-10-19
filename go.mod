@@ -5,8 +5,9 @@ go 1.19
 require (
 	atomicgo.dev/keyboard v0.2.9
 	github.com/pterm/pterm v0.12.56
-	github.com/spf13/afero v1.9.5
+	github.com/spf13/afero v1.10.0
 	github.com/spf13/cobra v1.6.1
+	golang.org/x/mod v0.13.0
 )
 
 require (

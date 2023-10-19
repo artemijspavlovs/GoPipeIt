@@ -1,61 +1,48 @@
 package metadata
 
 import (
-	"bufio"
+	"errors"
 	"fmt"
-	"strings"
 
 	"github.com/pterm/pterm"
 	"github.com/spf13/afero"
 )
 
 type Metadata struct {
-	ProjectName   string
-	GoVersion     string
-	GitBranch     string
-	CICDPlatform  string
-	PipelineTasks map[string]bool
-	LocalTasks    map[string]bool
+	ProgrammingLanguage string
+	ProjectName         string
+	GoVersion           string
+	GitBranch           string
+	CICDPlatform        string
+	PipelineTasks       map[string]bool
+	LocalTasks          map[string]bool
 }
 
 func New() *Metadata {
 	return &Metadata{}
 }
 
-func (cfg *Metadata) SetProjectName(n string, fs afero.Fs) error {
-	if n == "" {
-		fmt.Println("Project name was not set, extracting from go.mod file")
-		pn, err := cfg.ExtractProjectNameFromGoModFile(fs)
-		if err != nil {
-			return fmt.Errorf("failed to extract project name from go.mod file: %v", err)
-		}
-		pterm.Println("Project name extracted from go.mod:", pterm.Yellow(*pn))
-		err = cfg.SetProjectName(*pn, fs)
-		if err != nil {
-			return fmt.Errorf("failed to set project name: %v", err)
-		}
-		return nil
-	}
-	cfg.ProjectName = n
-	return nil
+func (cfg *Metadata) SetProgrammingLanguage(n string) {
+	cfg.ProgrammingLanguage = n
 }
 
-func (cfg *Metadata) SetGoVersion(n string, fs afero.Fs) error {
-	if n == "" {
-		fmt.Println("Go version was not set, extracting from go.mod file")
-		gv, err := cfg.ExtractGoVersionFromGoModFile(fs)
+func (cfg *Metadata) SetProjectName(n string, fs *afero.Fs) error {
+	switch cfg.ProgrammingLanguage {
+	case "go":
+		// TODO: extract into a separate function
+		err := cfg.SetProjectNameForGoProject(n, fs)
 		if err != nil {
-			return fmt.Errorf("failed to extract go version from go.mod file: %v", err)
+			pterm.Error.PrintOnError(err)
+			return err
 		}
-		pterm.Println("Go version extracted from go.mod: " + pterm.Yellow(*gv))
-		err = cfg.SetGoVersion(*gv, fs)
-		if err != nil {
-			return fmt.Errorf("failed to set go version: %v", err)
-		}
+
+		cfg.ProjectName = n
 		return nil
+	case "rust":
+		fmt.Println("tbd")
 	}
-	cfg.GoVersion = n
-	return nil
+	// TODO: improve error message
+	return errors.New("something went wrong")
 }
 
 func (cfg *Metadata) SetGitBranch(n string) {
@@ -83,50 +70,4 @@ func (cfg *Metadata) SetLocalTasks(n []string) {
 	for _, t := range n {
 		cfg.LocalTasks[t] = true
 	}
-}
-
-func readGoMod(fs afero.Fs) ([]string, error) {
-	exists, _ := afero.Exists(fs, "go.mod")
-	if !exists {
-		return nil, fmt.Errorf("go.mod does not exist")
-	}
-	f, err := fs.Open("go.mod")
-	if err != nil {
-		return nil, err
-	}
-
-	sc := bufio.NewScanner(f)
-	sc.Split(bufio.ScanLines)
-
-	var txt []string
-	for sc.Scan() {
-		txt = append(txt, sc.Text())
-	}
-	f.Close()
-	return txt, nil
-}
-
-func (cfg *Metadata) ExtractProjectNameFromGoModFile(fs afero.Fs) (*string, error) {
-	txt, err := readGoMod(fs)
-
-	for _, line := range txt {
-		if strings.HasPrefix(line, "module ") {
-			trimmed := strings.Replace(line, "module ", "", 1)
-			t := trimmed[strings.LastIndex(trimmed, "/")+1:]
-			return &t, nil
-		}
-	}
-	return nil, fmt.Errorf("failed to read go.mod: %v", err)
-}
-
-func (cfg *Metadata) ExtractGoVersionFromGoModFile(fs afero.Fs) (*string, error) {
-	txt, err := readGoMod(fs)
-
-	for _, line := range txt {
-		if strings.HasPrefix(line, "go ") {
-			t := strings.Replace(line, "go ", "", 1)
-			return &t, nil
-		}
-	}
-	return nil, fmt.Errorf("failed to read go.mod file: %v", err)
 }

@@ -29,8 +29,9 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 	Run: func(cmd *cobra.Command, args []string) {
 		m := metadata.New()
 
-		err := wizard.New(m, ApplicationFileSystem)
+		err := wizard.New(m, &ApplicationFileSystem)
 		if err != nil {
+			pterm.Fatal.Println(err)
 			return
 		}
 
