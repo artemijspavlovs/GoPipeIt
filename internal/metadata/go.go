@@ -1,7 +1,6 @@
 package metadata
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -49,12 +48,17 @@ func (cfg *Metadata) SetGoVersion(n string, fs *afero.Fs) error {
 		fmt.Println("Go version was not set, extracting from go.mod file")
 		gv, err := cfg.ExtractGoVersionFromGoModFile(fs)
 		if err != nil {
-			return fmt.Errorf("failed to extract go version from go.mod file: %v", err)
+			return fmt.Errorf(
+				"failed to extract %s version from '%s': %v",
+				cfg.ProgrammingLanguage,
+				cfg.ProgrammingLanguageConfigFile,
+				err,
+			)
 		}
 		pterm.Println("Go version extracted from go.mod: " + pterm.Yellow(*gv))
-		cfg.GoVersion = *gv
+		cfg.ProgrammingLanguageVersion = *gv
 		return nil
 	}
-	cfg.GoVersion = n
-	return errors.New("something went wrong")
+	cfg.ProgrammingLanguageVersion = n
+	return nil
 }

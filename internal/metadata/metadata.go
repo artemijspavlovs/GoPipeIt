@@ -10,8 +10,8 @@ import (
 type Metadata struct {
 	ProgrammingLanguage           string
 	ProgrammingLanguageConfigFile string
+	ProgrammingLanguageVersion    string
 	ProjectName                   string
-	GoVersion                     string
 	GitBranch                     string
 	CICDPlatform                  string
 	PipelineTasks                 map[string]bool
@@ -41,7 +41,11 @@ func (cfg *Metadata) SetProjectName(n string, fs *afero.Fs) error {
 			if err != nil {
 				return fmt.Errorf("failed to extract project name from go.mod file: %v", err)
 			}
-			pterm.Printfln("Project name extracted from %s: %s", cfg.ProgrammingLanguageConfigFile, pterm.Yellow(*gopn))
+			pterm.Printfln(
+				"Project name extracted from %s: %s",
+				cfg.ProgrammingLanguageConfigFile,
+				pterm.Yellow(*gopn),
+			)
 			cfg.ProjectName = *gopn
 			return nil
 		case "rust":
@@ -50,7 +54,11 @@ func (cfg *Metadata) SetProjectName(n string, fs *afero.Fs) error {
 			if err != nil {
 				return fmt.Errorf("failed to extract project name from Cargo.toml file: %v", err)
 			}
-			pterm.Printfln("Project name extracted from %s: %s", cfg.ProgrammingLanguageConfigFile, pterm.Yellow(*rpn))
+			pterm.Printfln(
+				"Project name extracted from %s: %s",
+				cfg.ProgrammingLanguageConfigFile,
+				pterm.Yellow(*rpn),
+			)
 			cfg.ProjectName = *rpn
 			return nil
 		}

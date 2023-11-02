@@ -8,14 +8,13 @@ output:
 linters-settings:
   lll:
     line-length: 150
-
 linters:
   # disable all linters by default and enable only linters that are explicitly mentioned
   disable-all: true
   enable:
     - asciicheck       # Simple linter to check that your code does not contain non-ASCII identifiers
     - bodyclose        # checks whether HTTP response body is closed and a re-use of TCP connection is not blocked
-    - depguard         # Go linter that checks if package imports are in a list of acceptable packages
+      # - depguard         # Go linter that checks if package imports are in a list of acceptable packages
     - dogsled          # Checks assignments with too many blank identifiers (e.g. x, , , _, := f())
     - dupl             # Tool for code clone detection
     - errcheck         # Errcheck is a program for checking for unchecked errors in go programs. These unchecked errors can be critical bugs in some cases

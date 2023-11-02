@@ -37,7 +37,8 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 			return
 		}
 
-		r, _ := pterm.DefaultInteractiveConfirm.WithDefaultText("overwrite existing configs? (defaults to No)").Show()
+		r, _ := pterm.DefaultInteractiveConfirm.WithDefaultText("overwrite existing configs? (defaults to No)").
+			Show()
 		RegenerateAll = r
 
 		pterm.Info.Println("generating configuration files...")
@@ -47,7 +48,10 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 		switch m.CICDPlatform {
 		case "github":
 			// move directory creation to CreateDirectoryStructure function?
-			err := tmpl.CreateDirectoryStructure(metadata.Platforms["github"].DirectoryStructure, ApplicationFileSystem)
+			err := tmpl.CreateDirectoryStructure(
+				metadata.Platforms["github"].DirectoryStructure,
+				ApplicationFileSystem,
+			)
 			if err != nil {
 				pterm.Fatal.Println("failed to create directory structure for GitHub CI", err)
 				return
@@ -55,7 +59,9 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 		}
 
 		if len(m.PipelineTasks) == 0 {
-			pterm.Warning.Println("no pipeline tasks were selected, skipping configuration file generation")
+			pterm.Warning.Println(
+				"no pipeline tasks were selected, skipping configuration file generation",
+			)
 		} else {
 			pterm.Info.Printfln("generating configuration files related to %s tasks", pterm.Yellow(m.CICDPlatform))
 			for t := range m.PipelineTasks {
@@ -68,7 +74,9 @@ Use it to generate optimal configuration files for GitHub Actions, goreleaser, p
 		}
 
 		if len(m.LocalTasks) == 0 {
-			pterm.Warning.Println("no additional tools were selected, skipping configuration file generation")
+			pterm.Warning.Println(
+				"no additional tools were selected, skipping configuration file generation",
+			)
 		} else {
 			pterm.Info.Println("setting up additional tools")
 			for t := range m.LocalTasks {
@@ -94,7 +102,11 @@ func GenerateConfigFromTemplates(t string, s []metadata.SourceToDest, m *metadat
 			)
 			continue
 		}
-		pterm.Info.Printfln("[%s] generating config %s", pterm.Yellow(t), pterm.Yellow(pair.ConfigDestination))
+		pterm.Info.Printfln(
+			"[%s] generating config %s",
+			pterm.Yellow(t),
+			pterm.Yellow(pair.ConfigDestination),
+		)
 
 		f, err := fs.Create(pair.ConfigDestination)
 		if err != nil {

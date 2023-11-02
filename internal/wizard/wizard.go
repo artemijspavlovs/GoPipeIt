@@ -28,7 +28,11 @@ func New(m *metadata.Metadata, fs *afero.Fs) error {
 
 	pni.WithMultiLine()
 	pn, _ := pni.WithDefaultText(
-		fmt.Sprintf("Input a custom project name ( defaults to the project name defined in your '%s' file )", m.ProgrammingLanguageConfigFile)).Show()
+		fmt.Sprintf(
+			"Input a custom project name ( defaults to the project name defined in your '%s' file )",
+			m.ProgrammingLanguageConfigFile,
+		),
+	).Show()
 
 	err := m.SetProjectName(pn, fs)
 	if err != nil {
@@ -44,13 +48,29 @@ func New(m *metadata.Metadata, fs *afero.Fs) error {
 
 	gvi := pterm.DefaultInteractiveTextInput
 	gvi.WithMultiLine(false)
-	gv, _ := gvi.WithDefaultText("Input the Go version to use ( defaults to the Go version defined in your go.mod file )").
+	gv, _ := gvi.WithDefaultText(
+		fmt.Sprintf(
+			"Input the %s version to use ( defaults to the %s version defined in your '%s' file )",
+			m.ProgrammingLanguage,
+			m.ProgrammingLanguage,
+			m.ProgrammingLanguageConfigFile,
+		),
+	).
 		Show()
 
-	err = m.SetGoVersion(gv, fs)
-	if err != nil {
-		pterm.Error.Println("failed to extract metadata values: ", err.Error())
-		return err
+	switch m.ProgrammingLanguage {
+	case "go":
+		err = m.SetGoVersion(gv, fs)
+		if err != nil {
+			pterm.Error.Println("failed to extract metadata values: ", err.Error())
+			return err
+		}
+	case "rust":
+		err = m.SetRustVersion(gv, fs)
+		if err != nil {
+			pterm.Error.Println("failed to extract metadata values: ", err.Error())
+			return err
+		}
 	}
 
 	cicd := newSelectWizard("Select a CI/CD platform", metadata.Platforms)
@@ -59,7 +79,10 @@ func New(m *metadata.Metadata, fs *afero.Fs) error {
 	t := newMultiselectWizard("Select tasks to include in the CI/CD pipeline", metadata.Tasks)
 	m.SetPipelineTasks(t)
 
-	lt := newMultiselectWizard("Select additional tools that you want to generate the config file for", metadata.LocalTasks)
+	lt := newMultiselectWizard(
+		"Select additional tools that you want to generate the config file for",
+		metadata.LocalTasks,
+	)
 	m.SetLocalTasks(lt)
 	return nil
 }
