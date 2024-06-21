@@ -53,7 +53,7 @@ jobs:
         if: steps.release-please.outputs.release_created
       # TODO: handle GCP, AWS, GitHub, Docker Hub and Azure container registries
       - name: Run GoReleaser - release binaries
-        uses: goreleaser/goreleaser-action@v3
+        uses: goreleaser/goreleaser-action@v6
         with:
           args: release --rm-dist --config .goreleaser.yaml --debug
         env:
