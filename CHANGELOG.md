@@ -1,5 +1,16 @@
 # Changelog
 
+## [2.0.0](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.3...v2.0.0) (2024-06-21)
+
+
+### ⚠ BREAKING CHANGES
+
+* update goreleaser configuration file to support v2
+
+### Bug Fixes
+
+* update goreleaser configuration file to support v2 ([7bc80c0](https://github.com/artemijspavlovs/gopipeit/commit/7bc80c01014fd088f7807c665a039c4ad35ad89c))
+
 ## [1.2.3](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.2...v1.2.3) (2024-06-21)
 
 
