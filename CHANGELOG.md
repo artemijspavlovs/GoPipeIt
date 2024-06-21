@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.1.0](https://github.com/artemijspavlovs/gopipeit/compare/v2.0.1...v2.1.0) (2024-06-21)
+
+
+### Features
+
+* refactor go mod reader to support package versions ([bd151a2](https://github.com/artemijspavlovs/gopipeit/commit/bd151a2056399f0ca8e519f8380c7d7b15bc8dc9))
+
 ## [2.0.1](https://github.com/artemijspavlovs/gopipeit/compare/v2.0.0...v2.0.1) (2024-06-21)
 
 
