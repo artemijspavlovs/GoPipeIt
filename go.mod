@@ -1,4 +1,4 @@
-module github.com/artemijspavlovs/gopipeit
+module github.com/artemijspavlovs/gopipeit/v2
 
 go 1.22.4
 
