@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.0.1](https://github.com/artemijspavlovs/gopipeit/compare/v2.0.0...v2.0.1) (2024-06-21)
+
+
+### Bug Fixes
+
+* checkout code before setting up go ([8dbef84](https://github.com/artemijspavlovs/gopipeit/commit/8dbef84f0a63328649cef6ff547ee0d9b34bb0fb))
+* run golangci-lint only when go files were changed ([e734bdd](https://github.com/artemijspavlovs/gopipeit/commit/e734bdd49ceb7ffd6c3f43aeddcf04e0664fdb35))
+
 ## [2.0.0](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.3...v2.0.0) (2024-06-21)
 
 
