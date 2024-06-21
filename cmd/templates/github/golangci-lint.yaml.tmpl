@@ -7,7 +7,15 @@ on:
       - v*
     branches:
       - {{ .GitBranch }}
+    paths:
+      - '**/*.go'
+      - go.mod
+      - go.sum
   pull_request:
+    paths:
+      - '**/*.go'
+      - go.mod
+      - go.sum
 
 permissions:
   contents: read
