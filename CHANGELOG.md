@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.3](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.2...v1.2.3) (2024-06-21)
+
+
+### Bug Fixes
+
+* add version to the go releaser ([335bdc5](https://github.com/artemijspavlovs/gopipeit/commit/335bdc558c7e45ee8331e0f8a89ed5c105263a37))
+
 ## [1.2.2](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.1...v1.2.2) (2024-06-21)
 
 
