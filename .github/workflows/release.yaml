@@ -53,7 +53,7 @@ jobs:
       - name: Run GoReleaser - release binaries
         uses: goreleaser/goreleaser-action@v6
         with:
-          args: release --clean --config .goreleaser.yaml --debug
+          args: release --clean --config .goreleaser.yaml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GOPRIVATE: github.com/${{ env.GITHUB_REPOSITORY_OWNER }}
