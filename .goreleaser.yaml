@@ -1,8 +1,10 @@
 version: 2
 project_name: gopipeit
+
 before:
   hooks:
     - go mod tidy
+
 builds:
   - id: gopipeit
     main: ./main.go
@@ -16,6 +18,7 @@ builds:
     goarch:
       - amd64
       - arm64
+
 changelog:
   use: git
   groups:
