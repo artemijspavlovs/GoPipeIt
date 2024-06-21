@@ -1,5 +1,27 @@
 # Changelog
 
+## [1.2.0](https://github.com/artemijspavlovs/gopipeit/compare/v1.1.0...v1.2.0) (2024-06-21)
+
+
+### Features
+
+* add mvp for gopipeit ([4fb37f1](https://github.com/artemijspavlovs/gopipeit/commit/4fb37f1e57333a6e1c9d557b9b7e406517086523))
+* add templates for github actions and tool config ([2f1719f](https://github.com/artemijspavlovs/gopipeit/commit/2f1719f53b65fcce8a3722fc86c42a17119fe672))
+* update pre-commit hook and golanci-lint templates ([84d91ad](https://github.com/artemijspavlovs/gopipeit/commit/84d91ad9f2c3ddd34c8a091180e067f965b56379))
+
+
+### Bug Fixes
+
+* golangci-lint removed unnecessary new line ([27632fb](https://github.com/artemijspavlovs/gopipeit/commit/27632fbf768f2a2eb6c8757320859b6a65eb5c0e))
+* return after setting the git branch in the metadata ([ab5091c](https://github.com/artemijspavlovs/gopipeit/commit/ab5091c33c5a9e75f6de85df68f719e513b8b31e))
+* update golangci-lint action to v6 ([baa0ba6](https://github.com/artemijspavlovs/gopipeit/commit/baa0ba68eb2b834e4f04fd59ae606620155b4cdc))
+
+
+### Documentation
+
+* add gif with gopipeit demo ([145f82a](https://github.com/artemijspavlovs/gopipeit/commit/145f82a2e2c65d14a6a39c622dbd4990f88cd5c0))
+* exclude docs from pre-commit hook check ([d49d38a](https://github.com/artemijspavlovs/gopipeit/commit/d49d38a7cfd399f258518769385def3118dd8dd5))
+
 ## [1.1.0](https://github.com/artemijspavlovs/gopipeit/compare/v1.0.0...v1.1.0) (2024-06-21)
 
 
