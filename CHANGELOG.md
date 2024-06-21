@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.2](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.1...v1.2.2) (2024-06-21)
+
+
+### Bug Fixes
+
+* remove debug flag from goreleaser ([d4472bc](https://github.com/artemijspavlovs/gopipeit/commit/d4472bc0daa62fbb45cc05744772bd5bc8c14142))
+
 ## [1.2.1](https://github.com/artemijspavlovs/gopipeit/compare/v1.2.0...v1.2.1) (2024-06-21)
 
 
