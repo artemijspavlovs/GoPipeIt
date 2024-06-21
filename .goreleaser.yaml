@@ -17,7 +17,6 @@ builds:
       - amd64
       - arm64
 changelog:
-  skip: false
   use: git
   groups:
     - title: Features
