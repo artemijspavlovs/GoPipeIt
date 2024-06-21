@@ -7,8 +7,8 @@ import (
 	"github.com/pterm/pterm"
 	"github.com/spf13/afero"
 
-	"github.com/artemijspavlovs/gopipeit/internal/metadata"
-	"github.com/artemijspavlovs/gopipeit/internal/state"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/metadata"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/state"
 )
 
 type Templates struct {

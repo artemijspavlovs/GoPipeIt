@@ -3,6 +3,7 @@ package metadata
 import (
 	"bufio"
 	"fmt"
+	"path/filepath"
 	"strings"
 
 	"github.com/pterm/pterm"
@@ -85,7 +86,7 @@ func (cfg *Metadata) SetLocalTasks(n []string) {
 	}
 }
 
-func readGoMod(fs afero.Fs) ([]string, error) {
+func readGoMod(fs afero.Fs) (*bufio.Scanner, error) {
 	exists, _ := afero.Exists(fs, "go.mod")
 	if !exists {
 		return nil, fmt.Errorf("go.mod does not exist")
@@ -96,37 +97,67 @@ func readGoMod(fs afero.Fs) ([]string, error) {
 	}
 
 	sc := bufio.NewScanner(f)
-	sc.Split(bufio.ScanLines)
-
-	var txt []string
-	for sc.Scan() {
-		txt = append(txt, sc.Text())
-	}
-	f.Close()
-	return txt, nil
+	return sc, nil
 }
 
 func (cfg *Metadata) ExtractProjectNameFromGoModFile(fs afero.Fs) (*string, error) {
-	txt, err := readGoMod(fs)
+	sc, err := readGoMod(fs)
+	linePrefix := "module "
+	var modulePath string
 
-	for _, line := range txt {
-		if strings.HasPrefix(line, "module ") {
-			trimmed := strings.Replace(line, "module ", "", 1)
-			t := trimmed[strings.LastIndex(trimmed, "/")+1:]
-			return &t, nil
+	for sc.Scan() {
+		line := sc.Text()
+		if strings.HasPrefix(line, linePrefix) {
+			modulePath = strings.TrimSpace(strings.TrimPrefix(line, linePrefix))
+			break
 		}
 	}
-	return nil, fmt.Errorf("failed to read go.mod: %v", err)
+
+	if err := sc.Err(); err != nil {
+		return nil, err
+	}
+
+	if modulePath == "" {
+		return nil, err
+	}
+
+	parts := strings.Split(modulePath, "/")
+	lastPart := parts[len(parts)-1]
+	if strings.HasPrefix(lastPart, "v") && len(lastPart) > 1 {
+		parts = parts[:len(parts)-1]
+	}
+
+	moduleName := filepath.Base(strings.Join(parts, "/"))
+
+	return &moduleName, nil
 }
 
 func (cfg *Metadata) ExtractGoVersionFromGoModFile(fs afero.Fs) (*string, error) {
-	txt, err := readGoMod(fs)
+	sc, err := readGoMod(fs)
+	linePrefix := "go "
+	var goVersion string
 
-	for _, line := range txt {
-		if strings.HasPrefix(line, "go ") {
-			t := strings.Replace(line, "go ", "", 1)
-			return &t, nil
+	for sc.Scan() {
+		line := sc.Text()
+		if strings.HasPrefix(line, linePrefix) {
+			goVersion = strings.TrimSpace(strings.TrimPrefix(line, linePrefix))
+			break
 		}
 	}
-	return nil, fmt.Errorf("failed to read go.mod file: %v", err)
+
+	if err := sc.Err(); err != nil {
+		return nil, err
+	}
+
+	if goVersion == "" {
+		return nil, err
+	}
+
+	// for _, line := range txt {
+	// 	if strings.HasPrefix(line, "go ") {
+	// 		t := strings.Replace(line, "go ", "", 1)
+	// 		return &t, nil
+	// 	}
+	// }
+	return &goVersion, nil
 }

@@ -9,10 +9,10 @@ import (
 	"github.com/spf13/afero"
 	"github.com/spf13/cobra"
 
-	"github.com/artemijspavlovs/gopipeit/internal/metadata"
-	"github.com/artemijspavlovs/gopipeit/internal/state"
-	"github.com/artemijspavlovs/gopipeit/internal/templates"
-	"github.com/artemijspavlovs/gopipeit/internal/wizard"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/metadata"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/state"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/templates"
+	"github.com/artemijspavlovs/gopipeit/v2/internal/wizard"
 )
 
 var ApplicationFileSystem = afero.NewOsFs()
